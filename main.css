@@ -3,8 +3,12 @@
     margin: 0;
 }
 
-#main {
+body {
     height: 100vh; 
     width: 100vw; 
     display: block;
+}
+
+.rectangle {
+    position: fixed;
 }
