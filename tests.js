@@ -57,6 +57,16 @@ describe("startDrawRectangle", function() {
     expect(rectangle.style.left).toBe('300px');
     expect(rectangle.style.top).toBe('150px');
   });
+
+  it("created rectangles should destroy on click", function() {
+    startDrawRectangle(100, 200);
+
+    var rectangle = document.body.getElementsByClassName('rectangle')[0];
+    rectangle.click()
+
+    var rectangles = document.body.getElementsByClassName('rectangle');
+    expect(rectangles.length).toBe(0);
+  });
 });
 
 

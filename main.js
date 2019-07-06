@@ -23,19 +23,23 @@ function getRandomColor() {
  * @param {int} y the vertical position of the rectangle in pixels.
  */
 function startDrawRectangle(x, y) {
-    // store start x and y position for later use
+    // create new rectangle element in dom
+    var newRectangle = document.createElement('div');
+    newRectangle.classList.add('rectangle');
+    newRectangle.style.top = y + 'px';
+    newRectangle.style.left = x + 'px';
+    newRectangle.style.width = 0;
+    newRectangle.style.height = 0;
+    newRectangle.style.backgroundColor = getRandomColor();
+    newRectangle.onclick = function() {
+        document.body.removeChild(newRectangle);
+    }
+    document.body.appendChild(newRectangle);
+
+    // store start x and y position and new rectangle for later use
     startX = x;
     startY = y;
-
-    // create new rectangle element in dom
-    currentRectangle = document.createElement('div');
-    currentRectangle.classList.add('rectangle');
-    currentRectangle.style.top = y + 'px';
-    currentRectangle.style.left = x + 'px';
-    currentRectangle.style.width = 0;
-    currentRectangle.style.height = 0;
-    currentRectangle.style.backgroundColor = getRandomColor();
-    document.body.appendChild(currentRectangle);
+    currentRectangle = newRectangle;
 }
  
 /**
