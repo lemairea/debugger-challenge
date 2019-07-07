@@ -59,13 +59,27 @@ describe("startDrawRectangle", function() {
   });
 
   it("created rectangles should destroy on click", function() {
+    // init jasmine clock to pass animation time
+    jasmine.clock().install();
+
     startDrawRectangle(100, 200);
 
-    var rectangle = document.body.getElementsByClassName('rectangle')[0];
-    rectangle.click()
+    var rectangle = document.body.getElementsByClassName('rectangle')[0];  
+    rectangle.dispatchEvent(new MouseEvent('dblclick', {
+      'view': window,
+      'bubbles': true,
+      'cancelable': true
+    }));
 
+    // simulate a 2s wait (test will not actually wait for 2s)
+    jasmine.clock().tick(2000);
+
+    // rectangle should be removed by now
     var rectangles = document.body.getElementsByClassName('rectangle');
-    expect(rectangles.length).toBe(0);
+    expect(rectangles.length).toBe(0);  
+
+    // deactivate jasmine clock
+    jasmine.clock().uninstall();
   });
 });
 

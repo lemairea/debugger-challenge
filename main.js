@@ -31,8 +31,11 @@ function startDrawRectangle(x, y) {
     newRectangle.style.width = 0;
     newRectangle.style.height = 0;
     newRectangle.style.backgroundColor = getRandomColor();
-    newRectangle.onclick = function() {
-        document.body.removeChild(newRectangle);
+    newRectangle.ondblclick = function() {
+        newRectangle.classList.add('rotate');
+        setTimeout(function(){
+            document.body.removeChild(newRectangle);
+        }, 2000);
     }
     document.body.appendChild(newRectangle);
 
