@@ -58,29 +58,6 @@ describe("startDrawRectangle", function() {
     expect(rectangle.style.top).toBe('150px');
   });
 
-  it("created rectangles should destroy on click", function() {
-    // init jasmine clock to pass animation time
-    jasmine.clock().install();
-
-    startDrawRectangle(100, 200);
-
-    var rectangle = document.body.getElementsByClassName('rectangle')[0];  
-    rectangle.dispatchEvent(new MouseEvent('dblclick', {
-      'view': window,
-      'bubbles': true,
-      'cancelable': true
-    }));
-
-    // simulate a 2s wait (test will not actually wait for 2s)
-    jasmine.clock().tick(2000);
-
-    // rectangle should be removed by now
-    var rectangles = document.body.getElementsByClassName('rectangle');
-    expect(rectangles.length).toBe(0);  
-
-    // deactivate jasmine clock
-    jasmine.clock().uninstall();
-  });
 });
 
 
@@ -146,6 +123,71 @@ describe("finishDrawRectangle", function() {
     expect(currentRectangle).toBeNull();
     expect(startX).toBeNull();
     expect(startY).toBeNull();
+  });
+
+});
+
+describe("removeRectangle", function() {
+
+  var dblClickEvent = new MouseEvent('dblclick', {
+    'view': window,
+    'bubbles': true,
+    'cancelable': true
+  });
+
+  beforeEach(function() {
+    init();    
+    jasmine.clock().install(); // init jasmine clock to pass animation time
+  });
+
+  afterEach(function() {
+    jasmine.clock().uninstall(); // deactivate jasmine clock
+    cleanup();
+  });
+
+  it("created rectangles should destroy on double click", function() {
+    startDrawRectangle(100, 200);
+
+    var rectangle = document.body.getElementsByClassName('rectangle')[0];  
+    rectangle.dispatchEvent(dblClickEvent);
+
+    var rectangles = document.body.getElementsByClassName('rectangle');
+
+    // simulate a 1s wait -> rectangle should still be rotating
+    jasmine.clock().tick(1000);
+    expect(rectangles.length).toBe(1);  
+
+    // simulate an other 1s wait -> rectangle should be removed by now
+    jasmine.clock().tick(1000);
+    expect(rectangles.length).toBe(0);  
+  });
+
+  it("should wait for all rotations to finish before removing rectangles", function() {
+    startDrawRectangle(100, 200);
+    startDrawRectangle(200, 300);
+
+    // get created rectangles
+    var rectangles = document.body.getElementsByClassName('rectangle');
+    var rectangle1 = rectangles[0];  
+    var rectangle2 = rectangles[1];
+
+    // double click on rectangle 1
+    rectangle1.dispatchEvent(dblClickEvent);
+
+    // simulate a 1s wait -> rectangle 1 should still be rotating
+    jasmine.clock().tick(1000);
+    expect(rectangles.length).toBe(2);
+    
+    // double click on rectangle 2
+    rectangle2.dispatchEvent(dblClickEvent);
+
+    // simulate a 1s wait -> rectangle 2 should still be rotating
+    jasmine.clock().tick(1000);
+    expect(rectangles.length).toBe(2);
+    
+    // simulate an other 1s wait -> rectangles should be removed by now
+    jasmine.clock().tick(1000);
+    expect(rectangles.length).toBe(0);  
   });
 
 });

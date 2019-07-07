@@ -17,6 +17,35 @@ function getRandomColor() {
 }
 
 /**
+ * Remove the given rectangle.
+ * 
+ * The rectangle will first rotate and then if no other rectangles
+ * are rotating, remove all rectangles marked for removal.
+ * 
+ * @param {HTMLDivElement} rectangle the rectangle to remove.
+ */
+function removeRectangle(rectangle) {
+    // start rotation
+    rectangle.classList.add('rotate');
+
+    // wait for rotation animation to finish
+    setTimeout(function() {
+        // end rotation and mark for removal
+        rectangle.classList.remove('rotate');
+        rectangle.classList.add('remove');
+
+        // if no more rotating rectangles, remove all rectangles marked for removal
+        var rectanglesInRotation = document.body.getElementsByClassName('rotate');
+        var rectanglesToRemove = document.body.getElementsByClassName('remove');
+        if (rectanglesInRotation.length === 0) {
+            while (rectanglesToRemove.length > 0) {
+                document.body.removeChild(rectanglesToRemove[0]);      
+            }
+        }
+    }, 2000);
+}
+
+/**
  * Start drawing a rectangle with a random color at the given coordinates.
  * 
  * @param {int} x the horizontal position of the rectangle in pixels.
@@ -26,16 +55,14 @@ function startDrawRectangle(x, y) {
     // create new rectangle element in dom
     var newRectangle = document.createElement('div');
     newRectangle.classList.add('rectangle');
+    newRectangle.classList.add('draft');
     newRectangle.style.top = y + 'px';
     newRectangle.style.left = x + 'px';
     newRectangle.style.width = 0;
     newRectangle.style.height = 0;
     newRectangle.style.backgroundColor = getRandomColor();
     newRectangle.ondblclick = function() {
-        newRectangle.classList.add('rotate');
-        setTimeout(function(){
-            document.body.removeChild(newRectangle);
-        }, 2000);
+        removeRectangle(newRectangle);
     }
     document.body.appendChild(newRectangle);
 
@@ -72,6 +99,8 @@ function updateDrawRectangle(x, y) {
  * Finish drawing the current rectangle.
  */
 function finishDrawRectangle() {
+    currentRectangle.classList.remove('draft');
+    
     currentRectangle = null; 
     startX = null;
     startY = null;
